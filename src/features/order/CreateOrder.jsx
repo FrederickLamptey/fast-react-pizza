@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, redirect } from 'react-router-dom';
+import { Form, redirect, useNavigation } from 'react-router-dom';
 import { createOrder } from '../../services/apiRestaurant';
 
 // https://uibakery.io/regex-library/phone-number
@@ -33,6 +33,8 @@ const fakeCart = [
 ];
 
 function CreateOrder() {
+  const navigation = useNavigation(); //This hook has different types of states such as idle, loading, submitting, etc
+  const isSubmitting = navigation.state === 'submitting';
   // const [withPriority, setWithPriority] = useState(false);
   const cart = fakeCart;
 
@@ -74,7 +76,7 @@ function CreateOrder() {
         <div>
           {/*To include a field (cart) in the form with creating a new field in the form */}
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <button>Order now</button>
+          <button disabled={isSubmitting}>{isSubmitting? "Placing Order..." : "Order now"}</button>
         </div>
       </Form>
     </div>
@@ -84,19 +86,18 @@ function CreateOrder() {
 export async function action({ request }) {
   const formData = await request.formData();
   // console.log(formData)
-  const data = Object.fromEntries(formData); 
+  const data = Object.fromEntries(formData);
   console.log(data);
-  
+
   const order = {
     ...data,
     cart: JSON.parse(data.cart), //converts cart's data from string to an object
-    priority: data.priority === "on"
-  }
+    priority: data.priority === 'on',
+  };
 
-  console.log(order)
+  console.log(order);
 
   const newOrder = await createOrder(order);
-  
 
   return redirect(`/order/${newOrder.id}`);
 }

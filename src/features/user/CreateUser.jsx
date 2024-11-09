@@ -1,11 +1,22 @@
 import { useState } from 'react';
 import Button from '../../ui/Button';
+import { useDispatch } from 'react-redux';
+import { updateName } from './userSlice';
+import { useNavigate } from 'react-router-dom';
 
 function CreateUser() {
   const [username, setUsername] = useState('');
+  const dispatch = useDispatch(); //This is used to dispatch an action to update the state in redux. This function comes from redux.
+  const navigate = useNavigate(); //This is used to navigate to a different or other pages.
 
   function handleSubmit(e) {
     e.preventDefault();
+    
+    if (!username) return;
+
+    dispatch(updateName(username));
+    setUsername('');
+    navigate('/menu')
   }
 
   return (

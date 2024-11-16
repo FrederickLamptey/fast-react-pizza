@@ -3,6 +3,7 @@ import { getOrder } from "../../services/apiRestaurant";
 import OrderItem from "./OrderItem"
 import { calcMinutesLeft, formatCurrency, formatDate } from "../../utils/helpers";
 import { useEffect } from "react";
+import UpdateOrder from "./UpdateOrder";
 
 
 // Test ID: IIDSAT
@@ -99,6 +100,8 @@ function Order() {
         {priority && <p className="text-sm font-medium text-stone-600">Price priority: {formatCurrency(priorityPrice)}</p>}
         <p className="font-bold">To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}</p>
       </div>
+
+      {!priority && <UpdateOrder order={ order} />}
     </div>
   );
 }
